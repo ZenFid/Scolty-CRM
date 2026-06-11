@@ -38,9 +38,17 @@ export function useAuth() {
     return error
   }
 
+  async function signInWithMagicLink(email: string) {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: true },
+    })
+    return error
+  }
+
   async function signOut() {
     await supabase.auth.signOut()
   }
 
-  return { ...state, signIn, signUp, signOut }
+  return { ...state, signIn, signUp, signInWithMagicLink, signOut }
 }
