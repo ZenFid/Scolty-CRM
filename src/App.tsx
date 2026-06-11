@@ -10,6 +10,7 @@ import { SUPABASE_READY } from '@/lib/supabase'
 import AppShell from '@/components/layout/AppShell'
 import XpToastProvider from '@/components/arena/XpToastProvider'
 import AuthPage from '@/features/auth/AuthPage'
+import OnboardingPage from '@/features/auth/OnboardingPage'
 
 // Base CRM pages
 import Dashboard   from '@/features/dashboard/Dashboard'
@@ -120,17 +121,27 @@ function AppRoutes() {
 }
 
 function AuthGate({ children }: { children: React.ReactNode }) {
-  const { session, loading } = useAuth()
+  const { session, loading: authLoading, user } = useAuth()
+  const { onboarded, loading: profileLoading, updateProfile } = useUserProfile()
 
   if (!SUPABASE_READY) return <>{children}</>
 
-  if (loading) return (
+  if (authLoading || profileLoading) return (
     <div className="atmospheric min-h-screen flex items-center justify-center">
       <div className="w-8 h-8 rounded-full border-2 border-cyan-brand/30 border-t-cyan-brand animate-spin" />
     </div>
   )
 
   if (!session) return <AuthPage />
+
+  if (!onboarded) return (
+    <OnboardingPage
+      userEmail={user?.email}
+      onComplete={async (displayName, workspaceName) => {
+        await updateProfile({ display_name: displayName, workspace_name: workspaceName, onboarded: true })
+      }}
+    />
+  )
 
   return <>{children}</>
 }

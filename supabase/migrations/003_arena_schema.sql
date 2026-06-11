@@ -467,5 +467,5 @@ create trigger videos_xp_engine
   for each row execute function process_video_xp();
 
 -- Indexes for performance
-create index if not exists on editors (total_xp desc);
-create index if not exists on editors (current_streak desc);
+create index if not exists idx_editors_total_xp on editors (total_xp desc);
+create index if not exists idx_editors_current_streak on editors (current_streak desc);

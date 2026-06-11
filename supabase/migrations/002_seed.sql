@@ -1,9 +1,9 @@
--- Run AFTER creating a user via Supabase Auth. Replace <USER_ID> with your auth.users id.
--- Example: select id from auth.users limit 1;
+-- Run AFTER creating your account in the app (Google login or email).
+-- It automatically uses the first user found in auth.users.
 
 do $$
 declare
-  uid  uuid := '<USER_ID>';  -- replace with your user id
+  uid  uuid := (select id from auth.users order by created_at limit 1);
   c1 uuid; c2 uuid; c3 uuid; c4 uuid; c5 uuid; c6 uuid;
   e1 uuid; e2 uuid; e3 uuid;
 begin

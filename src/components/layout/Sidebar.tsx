@@ -1,10 +1,12 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, Kanban, Users, Clapperboard,
-  BarChart3, Database, Settings, ChevronLeft, ChevronRight, Swords,
+  BarChart3, Database, Settings, ChevronLeft, ChevronRight, Swords, LogOut,
 } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
+import { useAuth } from '@/hooks/useAuth'
+import { useUserProfile } from '@/hooks/useUserProfile'
 import Avatar from '@/components/ui/Avatar'
 
 const NAV = [
@@ -20,7 +22,13 @@ const NAV = [
 
 export default function Sidebar() {
   const { sidebarCollapsed, toggleSidebar } = useAppStore()
+  const { signOut } = useAuth()
+  const { profile } = useUserProfile()
   const w = sidebarCollapsed ? 64 : 240
+
+  const displayName   = profile?.display_name   ?? 'Usuário'
+  const workspaceName = profile?.workspace_name ?? 'Minha Agência'
+  const avatarColor   = profile?.avatar_color   ?? '#38bdf8'
 
   return (
     <motion.aside
@@ -89,20 +97,27 @@ export default function Sidebar() {
 
       {/* User */}
       <div className="p-3 border-t border-white/[0.06] flex items-center gap-2 flex-shrink-0">
-        <Avatar name="Daniel Fidyk" color="#38bdf8" size={30} />
+        <Avatar name={displayName} color={avatarColor} size={30} />
         <AnimatePresence>
           {!sidebarCollapsed && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="min-w-0"
+              className="min-w-0 flex-1"
             >
-              <p className="text-xs font-semibold text-ink-primary whitespace-nowrap truncate">Daniel Fidyk</p>
-              <p className="text-[10px] text-ink-muted">Owner</p>
+              <p className="text-xs font-semibold text-ink-primary whitespace-nowrap truncate">{displayName}</p>
+              <p className="text-[10px] text-ink-muted truncate">{workspaceName}</p>
             </motion.div>
           )}
         </AnimatePresence>
+        <button
+          onClick={signOut}
+          title="Sair da conta"
+          className="text-ink-muted hover:text-red-400 transition-colors p-1 rounded flex-shrink-0"
+        >
+          <LogOut size={14} />
+        </button>
       </div>
     </motion.aside>
   )
