@@ -30,6 +30,11 @@ export default function Sidebar() {
   const workspaceName = profile?.workspace_name ?? 'Minha Agência'
   const avatarColor   = profile?.avatar_color   ?? '#38bdf8'
 
+  async function handleSignOut() {
+    await signOut()
+    window.location.href = '/'
+  }
+
   return (
     <motion.aside
       animate={{ width: w }}
@@ -112,7 +117,7 @@ export default function Sidebar() {
           )}
         </AnimatePresence>
         <button
-          onClick={signOut}
+          onClick={handleSignOut}
           title="Sair da conta"
           className="text-ink-muted hover:text-red-400 transition-colors p-1 rounded flex-shrink-0"
         >
