@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase, SUPABASE_READY } from '@/lib/supabase'
 import { MOCK_MISSIONS, MOCK_MISSION_PROGRESS } from '@/lib/mockData'
 import type { Mission, MissionProgress } from '@/types'
@@ -12,6 +12,7 @@ function getPeriodStart(scope: 'daily' | 'weekly'): string {
 }
 
 export function useMissions(editorId?: string) {
+  const channelName = useRef(`mission-progress-rt-${Math.random()}`).current
   const [missions, setMissions]   = useState<Mission[]>([])
   const [progress, setProgress]   = useState<MissionProgress[]>([])
   const [loading, setLoading]     = useState(true)
@@ -44,7 +45,7 @@ export function useMissions(editorId?: string) {
   useEffect(() => {
     fetch()
     if (!SUPABASE_READY || !editorId) return
-    const ch = supabase.channel('mission-progress-rt')
+    const ch = supabase.channel(channelName)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'mission_progress',
         filter: `editor_id=eq.${editorId}` }, fetch)
       .subscribe()

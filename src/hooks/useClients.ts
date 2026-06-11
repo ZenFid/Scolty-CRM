@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase, SUPABASE_READY } from '@/lib/supabase'
 import { MOCK_CLIENTS } from '@/lib/mockData'
 import type { Client, ClientStatus } from '@/types'
@@ -7,6 +7,7 @@ export function useClients() {
   const [clients, setClients]   = useState<Client[]>([])
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState<string | null>(null)
+  const channelName = useRef(`clients-rt-${Math.random()}`).current
 
   const fetch = useCallback(async () => {
     if (!SUPABASE_READY) {
@@ -33,7 +34,7 @@ export function useClients() {
     fetch()
     if (!SUPABASE_READY) return
     const ch = supabase
-      .channel('clients-rt')
+      .channel(channelName)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'clients' }, fetch)
       .subscribe()
     return () => { supabase.removeChannel(ch) }

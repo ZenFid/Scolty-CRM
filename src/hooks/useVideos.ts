@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase, SUPABASE_READY } from '@/lib/supabase'
 import { MOCK_VIDEOS_RICH } from '@/lib/mockData'
 import type { Video, VideoStage } from '@/types'
@@ -6,6 +6,7 @@ import type { Video, VideoStage } from '@/types'
 export function useVideos() {
   const [videos, setVideos]   = useState<Video[]>([])
   const [loading, setLoading] = useState(true)
+  const channelName = useRef(`videos-rt-${Math.random()}`).current
 
   const fetch = useCallback(async () => {
     if (!SUPABASE_READY) {
@@ -28,7 +29,7 @@ export function useVideos() {
     fetch()
     if (!SUPABASE_READY) return
     const ch = supabase
-      .channel('videos-rt')
+      .channel(channelName)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'videos' }, fetch)
       .subscribe()
     return () => { supabase.removeChannel(ch) }
