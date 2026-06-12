@@ -1,5 +1,5 @@
 // ── Base CRM types ─────────────────────────────────────────────
-export type ClientStatus = 'nao_chamado' | 'em_contato' | 'proposta' | 'fechado' | 'perdido'
+export type ClientStatus = 'nao_chamado' | 'nao_respondeu' | 'em_contato' | 'proposta' | 'fechado' | 'perdido'
 export type VideoFormat  = 'reel' | 'vsl' | 'ugc' | 'ad'
 export type VideoStage   = 'backlog' | 'editing' | 'review' | 'approved' | 'delivered'
 export type ActivityType = 'note' | 'call' | 'email' | 'message' | 'meeting' | 'status_change'
@@ -112,11 +112,12 @@ export interface XpToast {
 
 // ── Config maps ────────────────────────────────────────────────
 export const STATUS_CONFIG: Record<ClientStatus, { label: string; className: string; dot: string }> = {
-  nao_chamado: { label: 'Não chamado', className: 'bg-slate-500/15 text-slate-400 border-slate-500/25',    dot: '#94a3b8' },
-  em_contato:  { label: 'Em contato',  className: 'bg-blue-500/15  text-blue-400  border-blue-500/25',     dot: '#60a5fa' },
-  proposta:    { label: 'Proposta',    className: 'bg-amber-500/15 text-amber-400 border-amber-500/25',    dot: '#fbbf24' },
-  fechado:     { label: 'Fechado',     className: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25', dot: '#3ddc97' },
-  perdido:     { label: 'Perdido',     className: 'bg-rose-500/15  text-rose-400  border-rose-500/25',     dot: '#fb7185' },
+  nao_chamado:  { label: 'Não chamado',  className: 'bg-slate-500/15  text-slate-400  border-slate-500/25',   dot: '#94a3b8' },
+  nao_respondeu:{ label: 'Não respondeu',className: 'bg-orange-500/15 text-orange-400 border-orange-500/25',  dot: '#fb923c' },
+  em_contato:   { label: 'Em contato',   className: 'bg-blue-500/15   text-blue-400   border-blue-500/25',    dot: '#60a5fa' },
+  proposta:     { label: 'Proposta',     className: 'bg-amber-500/15  text-amber-400  border-amber-500/25',   dot: '#fbbf24' },
+  fechado:      { label: 'Fechado',      className: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25', dot: '#3ddc97' },
+  perdido:      { label: 'Perdido',      className: 'bg-rose-500/15   text-rose-400   border-rose-500/25',    dot: '#fb7185' },
 }
 
 export const FORMAT_CONFIG: Record<VideoFormat, { label: string; className: string }> = {
@@ -142,5 +143,5 @@ export const RARITY_CONFIG: Record<AchievementRarity, { label: string; color: st
 }
 
 export const CLIENT_STAGES: VideoStage[] = ['backlog', 'editing', 'review', 'approved', 'delivered']
-export const CLIENT_STATUSES: ClientStatus[] = ['nao_chamado', 'em_contato', 'proposta', 'fechado', 'perdido']
+export const CLIENT_STATUSES: ClientStatus[] = ['nao_chamado', 'nao_respondeu', 'em_contato', 'proposta', 'fechado', 'perdido']
 export const VIDEO_FORMATS: VideoFormat[] = ['reel', 'vsl', 'ugc', 'ad']
