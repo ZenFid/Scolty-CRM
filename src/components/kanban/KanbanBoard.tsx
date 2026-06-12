@@ -1,6 +1,6 @@
 import {
   DndContext, PointerSensor, useSensor, useSensors,
-  DragOverlay, closestCenter, type DragEndEvent,
+  DragOverlay, closestCorners, type DragEndEvent,
 } from '@dnd-kit/core'
 import { useState } from 'react'
 import KanbanColumn from './KanbanColumn'
@@ -21,7 +21,7 @@ interface Props<T extends { id: string }> {
 }
 
 export default function KanbanBoard<T extends { id: string }>({ columns, onMove }: Props<T>) {
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const allItems = columns.flatMap(c => c.items)
@@ -32,8 +32,12 @@ export default function KanbanBoard<T extends { id: string }>({ columns, onMove 
     const { active, over } = e
     setActiveId(null)
     if (!over) return
-    const toColumnId = columns.find(c => c.id === over.id || c.items.some(i => i.id === over.id))?.id
-    if (toColumnId && toColumnId !== columns.find(c => c.items.some(i => i.id === active.id))?.id) {
+
+    const fromColumnId = columns.find(c => c.items.some(i => i.id === String(active.id)))?.id
+    // over.id is always a column id because only columns are registered as droppables
+    const toColumnId = String(over.id)
+
+    if (fromColumnId && toColumnId && fromColumnId !== toColumnId) {
       onMove(String(active.id), toColumnId)
     }
   }
@@ -41,7 +45,7 @@ export default function KanbanBoard<T extends { id: string }>({ columns, onMove 
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={closestCorners}
       onDragStart={e => setActiveId(String(e.active.id))}
       onDragEnd={handleDragEnd}
       onDragCancel={() => setActiveId(null)}
@@ -55,7 +59,6 @@ export default function KanbanBoard<T extends { id: string }>({ columns, onMove 
             color={col.color}
             count={col.items.length}
             total={col.total}
-            itemIds={col.items.map(i => i.id)}
           >
             {col.items.map(item => col.renderCard(item))}
           </KanbanColumn>

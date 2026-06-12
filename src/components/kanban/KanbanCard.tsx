@@ -1,5 +1,4 @@
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
+import { useDraggable } from '@dnd-kit/core'
 import { AlertCircle, Clock } from 'lucide-react'
 import Avatar from '@/components/ui/Avatar'
 import { StatusPill, FormatPill } from '@/components/ui/Pill'
@@ -10,8 +9,12 @@ import type { Client, Video } from '@/types'
 interface ClientCardProps { client: Client; onClick?: () => void }
 
 export function ClientKanbanCard({ client, onClick }: ClientCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: client.id })
-  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: client.id })
+  const style = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    opacity: isDragging ? 0.4 : 1,
+    cursor: isDragging ? 'grabbing' : 'grab',
+  }
 
   return (
     <div
@@ -55,8 +58,12 @@ export function ClientKanbanCard({ client, onClick }: ClientCardProps) {
 interface VideoCardProps { video: Video; onClick?: () => void }
 
 export function VideoKanbanCard({ video, onClick }: VideoCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: video.id })
-  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: video.id })
+  const style = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    opacity: isDragging ? 0.4 : 1,
+    cursor: isDragging ? 'grabbing' : 'grab',
+  }
   const days   = daysUntil(video.deadline)
   const overdue = isOverdue(video.deadline)
 
