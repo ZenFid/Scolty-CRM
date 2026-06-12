@@ -46,7 +46,12 @@ export function useClients() {
       setClients(p => [fake, ...p])
       return fake
     }
-    const { data: row, error } = await supabase.from('clients').insert(data).select().single()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Não autenticado')
+    const { data: row, error } = await supabase
+      .from('clients')
+      .insert({ ...data, user_id: user.id })
+      .select().single()
     if (error) throw error
     return row as Client
   }, [])
