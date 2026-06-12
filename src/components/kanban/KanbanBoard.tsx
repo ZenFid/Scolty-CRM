@@ -55,6 +55,7 @@ export default function KanbanBoard<T extends { id: string }>({ columns, onMove 
             color={col.color}
             count={col.items.length}
             total={col.total}
+            itemIds={col.items.map(i => i.id)}
           >
             {col.items.map(item => col.renderCard(item))}
           </KanbanColumn>

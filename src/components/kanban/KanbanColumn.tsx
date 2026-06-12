@@ -7,10 +7,11 @@ interface Props {
   color: string
   count: number
   total?: string
+  itemIds: string[]
   children: React.ReactNode
 }
 
-export default function KanbanColumn({ id, label, color, count, total, children }: Props) {
+export default function KanbanColumn({ id, label, color, count, total, itemIds, children }: Props) {
   const { setNodeRef, isOver } = useDroppable({ id })
 
   return (
@@ -38,7 +39,7 @@ export default function KanbanColumn({ id, label, color, count, total, children 
         className={`flex-1 flex flex-col gap-2 min-h-[120px] rounded-xl p-2 transition-colors duration-150 ${isOver ? 'drop-over' : ''}`}
         style={{ background: isOver ? undefined : 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}
       >
-        <SortableContext items={[]} strategy={verticalListSortingStrategy}>
+        <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
           {children}
         </SortableContext>
       </div>
