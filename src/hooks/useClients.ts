@@ -53,24 +53,22 @@ export function useClients() {
       .insert({ ...data, user_id: user.id })
       .select().single()
     if (error) throw error
+    setClients(p => [row as Client, ...p])
     return row as Client
   }, [])
 
   const updateClient = useCallback(async (id: string, updates: Partial<Client>) => {
-    if (!SUPABASE_READY) {
-      setClients(p => p.map(c => c.id === id ? { ...c, ...updates, updated_at: new Date().toISOString() } : c))
-      return
-    }
+    const now = new Date().toISOString()
+    setClients(p => p.map(c => c.id === id ? { ...c, ...updates, updated_at: now } : c))
+    if (!SUPABASE_READY) return
     const { error } = await supabase.from('clients').update(updates).eq('id', id)
     if (error) throw error
   }, [])
 
   const deleteClient = useCallback(async (id: string) => {
     if (!window.confirm('Excluir este cliente?')) return
-    if (!SUPABASE_READY) {
-      setClients(p => p.filter(c => c.id !== id))
-      return
-    }
+    setClients(p => p.filter(c => c.id !== id))
+    if (!SUPABASE_READY) return
     const { error } = await supabase.from('clients').delete().eq('id', id)
     if (error) throw error
   }, [])
